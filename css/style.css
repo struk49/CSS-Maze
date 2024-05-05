@@ -1,0 +1,145 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,400i,700");
+
+*, *::before, *::after {
+    padding: 0;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+body {
+  font-family: Raleway, sans-serif;
+  background-color: #111;
+  color: #fff;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.mazeContainer {
+  position: relative;
+  width: 90vmin;
+  aspect-ratio: 1;
+  border: 2px solid #fff;
+  animation: maze 1ms forwards paused;
+  cursor: crosshair;
+  
+  @keyframes maze {
+    to {
+      --textOpacity: 1;
+      --textPointer: all;
+    }
+  }
+  
+  &:has(w:hover) {
+    animation-play-state: running;
+  }
+  
+  &:has(.target_start:hover) {
+    animation: none;
+    
+    .text_start { animation-play-state: running; }
+    .text_win { animation: none; }
+  }
+  
+  &:has(.target_end:hover) {
+    background-color: red;
+
+    .text_win { animation-play-state: running; }
+  }
+}
+
+.tiles {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  
+  * {
+    width: 100%;
+  }
+  
+  w {
+    background-color: hotpink;
+    background-image: 
+      linear-gradient(90deg, #0002, transparent 25% 75%, #0002),
+      linear-gradient(#0002, transparent 25% 75%, #0002),
+      conic-gradient(from -45deg, #fff4 90deg, #fff2 0 180deg, #0004 0 270deg, #0002 0);;
+    background-size: 50% 50%;
+    
+    &[rtr] {
+      border-radius: 0 50% 0 0;
+    }
+    
+    &[rbl] {
+      border-radius: 0 0 0 50%;
+    }
+  }
+}
+
+.target {
+  position: absolute;
+  width: 5%; 
+  aspect-ratio: 1;
+  background-color: var(--color, #fff);
+  
+  &_start {
+    --color: dodgerblue;
+    left: 85%; top: 85%;
+  }
+  &_end {
+    --color: limegreen;
+    left: 10%; top: 10%;
+  }
+}
+
+.text {
+  position: absolute;
+  inset: 0;
+  font-size: 5vmin;
+  padding: 1em;
+  
+  &_start {
+    background-color: #222;
+    animation: text-out 1ms forwards paused;
+    
+    @keyframes text-out {
+      to { display: none; }
+    }
+  }
+  
+  &_haw {
+    background-color: maroon;
+    opacity: var(--textOpacity, 0);
+    pointer-events: var(--textPointer, none);
+    transition: opacity 200ms; 
+    cursor: not-allowed;
+  }
+  
+  &_win {
+    background-color: green;
+    text-align: center;
+    font-size: 12vmin;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none;
+    animation: text-in 1ms forwards paused;
+    
+    @keyframes text-in {
+      to {
+        opacity: 1;
+        pointer-events: all;
+        --embedDisplay: block;
+      }
+    }
+    
+    embed {
+      visibility: hidden;
+      display: var(--embedDisplay, none);
+    }
+  }
+  
+  .blue { color: dodgerblue; }
+  .red { color: red; }
+  .pink { color: hotpink; }
+  .green { color: limegreen; }
+}
